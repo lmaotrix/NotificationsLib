@@ -36,3 +36,15 @@ describe("Metodo getNotifications", () => {
     //expect(notifications.includes(notification2)).toBeTruthy();
   });
 });
+
+//test deleteNotification
+describe("Metodo deleteNotification", () => {
+  test("il metodo deve eliminare una notifica dalla lista", () => {
+    const notificationManager = new NotificationManager();
+    notificationManager.addNotification(notification2);
+    notificationManager.addNotification(notification1);
+    notificationManager.deleteNotification(notification1);
+    const notifications = notificationManager.getNotifications();
+    expect(notifications).toEqual([notification2]);
+  });
+});

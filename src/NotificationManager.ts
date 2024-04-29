@@ -1,6 +1,7 @@
 interface INotificationManager {
   addNotification(notification: Notification): void;
   getNotifications(): Notification[];
+  deleteNotification(notification: Notification): void;
 }
 
 export type Notification = {
@@ -22,4 +23,8 @@ export class NotificationManager implements INotificationManager {
   getNotifications(): Notification[] {
     return this._notificationsList;
   }
+  deleteNotification(notification: Notification): void {
+    this._notificationsList.filter((a) => a !== notification);
+  }
+  
 }
