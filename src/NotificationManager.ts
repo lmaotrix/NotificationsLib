@@ -1,9 +1,8 @@
 interface INotificationManager {
   addNotification(notification: Notification): void;
   getNotifications(): Notification[];
-  deleteNotification(notification: Notification): void;
-  //deleteAllNotifications(): Notification[];
 }
+
 export type Notification = {
   title: string;
   description: string;
@@ -23,16 +22,4 @@ export class NotificationManager implements INotificationManager {
   getNotifications(): Notification[] {
     return this._notificationsList;
   }
-  deleteNotification(notification: Notification): void {
-    this._notificationsList.filter((a) => a !== notification);
-  }
-  //   deleteAllNotifications(): Notification[] {
-  //     if (
-  //       this._notificationsList.filter((a) => {
-  //         a.pinned === true;
-  //       })
-  //     ) {
-  //       return this._notificationsList;
-  //     }
-  //   }
 }
