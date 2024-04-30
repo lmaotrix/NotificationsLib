@@ -32,7 +32,10 @@ describe("Class NotificationManager", () => {
     type: "",
   };
   let notificationManager: NotificationManager;
-  beforeAll(() => {});
+  beforeAll(() => {
+    jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
+    jest.spyOn(global, "setTimeout"); //spia la setTimeout
+  });
   beforeEach(() => {
     notificationManager = new NotificationManager();
     notificationManager.addNotification(notification1);
@@ -66,6 +69,14 @@ describe("Class NotificationManager", () => {
       notificationManager.deleteAllNotifications();
       const notifications = notificationManager.getNotifications();
       expect(notifications).toEqual([notification2]);
+    });
+  });
+  // test deleteNotificationOntimeout
+  describe("Notifica rimossa dopo il dalay", () => {
+    test("Mi aspetto che l'array sia vuoto dopo il timeout", () => {
+      jest.runAllTimers();
+      const notifications = notificationManager.getNotifications();
+      expect(notifications).toHaveLength(1);
     });
   });
   //test le notifiche pinned sono  in alto e sucessivamente in ordine cronologico
