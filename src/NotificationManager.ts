@@ -11,29 +11,30 @@ export type Notification = {
   title: string;
   description: string;
   timestamp: Date;
-  pinned: boolean;
+  Permanent: boolean;
   type: string;
-  timeOut?: ReturnType<typeof setTimeout>;
+  // timeOut?: ReturnType<typeof setTimeout>;
 };
 export class NotificationManager implements INotificationManager {
   private _notificationsList: Notification[];
-  private _dueTime: number;
-  public constructor() {
+
+  public constructor(public timeOut: number) {
     this._notificationsList = [];
-    this._dueTime = 2000;
+    this.timeOut = timeOut;
   }
 
   addNotification(notification: Notification): void {
     this._notificationsList.push(notification);
-    if (!notification.pinned) {
-      notification.timeOut = setTimeout(() => {
+    this.sortNotifications();
+    if (!notification.Permanent) {
+      setTimeout(() => {
         this.deleteNotification(notification);
-      }, this._dueTime);
+      }, this.timeOut);
     }
   }
   deleteAllNotifications(): void {
     this._notificationsList = this._notificationsList.filter(
-      (a) => a.pinned !== false
+      (a) => a.Permanent !== false
     );
   }
   deleteNotification(notification: Notification): void {
@@ -48,12 +49,12 @@ export class NotificationManager implements INotificationManager {
 
   sortNotifications(): void {
     this._notificationsList.sort((a, b) => {
-      if (a.pinned && !b.pinned) {
+      if (a.Permanent && !b.Permanent) {
         return -1;
-      } else if (!a.pinned && b.pinned) {
+      } else if (!a.Permanent && b.Permanent) {
         return 1;
       }
-      return a.timestamp.getTime() - b.timestamp.getTime();
+      return b.timestamp.getTime() - a.timestamp.getTime();
     });
   }
 }
