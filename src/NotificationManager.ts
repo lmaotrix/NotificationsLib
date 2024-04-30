@@ -1,7 +1,9 @@
 interface INotificationManager {
   addNotification(notification: Notification): void;
-  getNotifications(): Notification[];
   deleteNotification(notification: Notification): void;
+  deleteAllNotifications(): void;
+  getNotifications(): Notification[];
+  sortNotifications(): void;
 }
 
 export type Notification = {
@@ -20,12 +22,28 @@ export class NotificationManager implements INotificationManager {
   addNotification(notification: Notification): void {
     this._notificationsList.push(notification);
   }
-  getNotifications(): Notification[] {
-    return this._notificationsList;
-  }
   deleteNotification(notification: Notification): void {
     this._notificationsList = this._notificationsList.filter(
       (a) => a !== notification
     );
+  }
+  deleteAllNotifications(): void {
+    this._notificationsList = this._notificationsList.filter(
+      (a) => a.pinned !== false
+    );
+  }
+  getNotifications(): Notification[] {
+    return this._notificationsList;
+  }
+
+  sortNotifications(): void {
+    this._notificationsList.sort((a, b) => {
+      if (a.pinned && !b.pinned) {
+        return -1;
+      } else if (!a.pinned && b.pinned) {
+        return 1;
+      }
+      return a.timestamp.getTime() - b.timestamp.getTime();
+    });
   }
 }
