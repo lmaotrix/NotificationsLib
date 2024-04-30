@@ -24,7 +24,8 @@ export class NotificationManager implements INotificationManager {
     return this._notificationsList;
   }
   deleteNotification(notification: Notification): void {
-    this._notificationsList.filter((a) => a !== notification);
+    this._notificationsList = this._notificationsList.filter(
+      (a) => a !== notification
+    );
   }
-  
 }
