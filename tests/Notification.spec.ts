@@ -7,7 +7,11 @@ import {
   jest,
   test,
 } from "@jest/globals";
-import { Notification, NotificationManager } from "../src/NotificationManager";
+import {
+  Notification,
+  NotificationManager,
+  NotificationPinned,
+} from "../src/NotificationManager";
 
 describe("Class NotificationManager", () => {
   const notification1: Notification = {
@@ -39,7 +43,7 @@ describe("Class NotificationManager", () => {
     notificationManager.addNotification(notification2);
     notificationManager.addNotification(notification3);
   });
-  //test get notification (deve restituire la liata di notifiche)
+  //1)test get notification (deve restituire la liata di notifiche)
   describe("Metodo getNotifications", () => {
     test("il metodo restituisce la lista delle notifiche", () => {
       const notifications = notificationManager.getNotifications();
@@ -48,7 +52,7 @@ describe("Class NotificationManager", () => {
       expect(notifications.includes(notification3)).toBeTruthy();
     });
   });
-  //test deleteNotification
+  //2)test deleteNotification
   describe("Metodo deleteNotification", () => {
     test("il metodo deve eliminare una notifica dalla lista", () => {
       notificationManager.deleteNotification(notification1);
@@ -57,7 +61,7 @@ describe("Class NotificationManager", () => {
     });
   });
 
-  //test deleteAllNotification
+  //3)test deleteAllNotification
   describe("Metodo deleteAllNotification", () => {
     test("il metodo deve eliminare tutte le notifiche senza il pin dalla lista", () => {
       notificationManager.deleteAllNotifications();
@@ -66,7 +70,7 @@ describe("Class NotificationManager", () => {
     });
   });
   jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
-  // test deleteNotificationOntimeout
+  // 4)test deleteNotificationOntimeout
   describe("Notifica rimossa dopo il dalay", () => {
     test("Mi aspetto che l'array abbia solo le notifiche pinned dopo il timeout", () => {
       jest.runAllTimers();
@@ -74,7 +78,7 @@ describe("Class NotificationManager", () => {
       expect(notifications).toHaveLength(1);
     });
   });
-  //test le notifiche pinned sono  in alto e sucessivamente in ordine cronologico
+  //5)test le notifiche pinned sono  in alto e sucessivamente in ordine cronologico
   describe("Metodo AddNotification", () => {
     test("Il metodo add aggiunge le notifiche nella lista in ordine cronologico dalla più recente alla più vecchia", () => {
       const notifications = notificationManager.getNotifications();
@@ -83,6 +87,16 @@ describe("Class NotificationManager", () => {
         notification3,
         notification1,
       ]);
+    });
+  });
+
+  //6)Test addPin
+  describe("Metodo addPin", () => {
+    test("Il metodo deve testare se i pin sono stati aggiunti correttamente nella lista", () => {
+      const notificationPinned = notificationManager.addPin(
+        notification1,
+        true
+      );
     });
   });
 });

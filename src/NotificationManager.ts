@@ -13,14 +13,16 @@ export type Notification = {
   timestamp: Date;
   Permanent: boolean;
   type: string;
-  // timeOut?: ReturnType<typeof setTimeout>;
 };
+
 export class NotificationManager implements INotificationManager {
   private _notificationsList: Notification[];
-
+  private _notificationsPinned: Notification[];
+  private _pin = false;
   public constructor(public timeOut: number) {
     this._notificationsList = [];
     this.timeOut = timeOut;
+    this._notificationsPinned = [];
   }
 
   addNotification(notification: Notification): void {
@@ -31,6 +33,9 @@ export class NotificationManager implements INotificationManager {
         this.deleteNotification(notification);
       }, this.timeOut);
     }
+  }
+  addPin(notification: Notification, _pin: boolean): void {
+    this._notificationsPinned.push(notification);
   }
   deleteAllNotifications(): void {
     this._notificationsList = this._notificationsList.filter(
