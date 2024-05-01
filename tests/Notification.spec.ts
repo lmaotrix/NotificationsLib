@@ -7,11 +7,7 @@ import {
   jest,
   test,
 } from "@jest/globals";
-import {
-  Notification,
-  NotificationManager,
-  NotificationPinned,
-} from "../src/NotificationManager";
+import { Notification, NotificationManager } from "../src/NotificationManager";
 
 describe("Class NotificationManager", () => {
   const notification1: Notification = {
@@ -20,6 +16,7 @@ describe("Class NotificationManager", () => {
     timestamp: new Date("2023-05-01"),
     Permanent: false,
     type: "",
+    pinned: false,
   };
   const notification2: Notification = {
     title: "sono una notifica pinned",
@@ -27,6 +24,7 @@ describe("Class NotificationManager", () => {
     timestamp: new Date("2023-04-15"),
     Permanent: true,
     type: "",
+    pinned: false,
   };
   const notification3: Notification = {
     title: "sono una nuova notifica",
@@ -34,6 +32,7 @@ describe("Class NotificationManager", () => {
     timestamp: new Date("2023-08-12"),
     Permanent: false,
     type: "",
+    pinned: false,
   };
   let notificationManager: NotificationManager;
   // beforeAll(() => {});
@@ -93,10 +92,11 @@ describe("Class NotificationManager", () => {
   //6)Test addPin
   describe("Metodo addPin", () => {
     test("Il metodo deve testare se i pin sono stati aggiunti correttamente nella lista", () => {
-      const notificationPinned = notificationManager.addPin(
-        notification1,
-        true
-      );
+      notificationManager.pinNotification(notification1);
+      expect(notification1.pinned).toEqual(true);
+      const notificationsPinned = notificationManager.getNotificationsPinned();
+      expect(notificationsPinned).toHaveLength(1);
     });
   });
 });
+

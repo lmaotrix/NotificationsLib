@@ -13,16 +13,20 @@ export type Notification = {
   timestamp: Date;
   Permanent: boolean;
   type: string;
+  pinned: boolean;
 };
+//  export type NotificationPinned = {
+//    notification : Notification;
+//    pinned: boolean;
+//  }
 
 export class NotificationManager implements INotificationManager {
   private _notificationsList: Notification[];
-  private _notificationsPinned: Notification[];
-  private _pin = false;
+  private _notificationPinned: Notification[];
   public constructor(public timeOut: number) {
     this._notificationsList = [];
     this.timeOut = timeOut;
-    this._notificationsPinned = [];
+    this._notificationPinned = [];
   }
 
   addNotification(notification: Notification): void {
@@ -34,9 +38,13 @@ export class NotificationManager implements INotificationManager {
       }, this.timeOut);
     }
   }
-  addPin(notification: Notification, _pin: boolean): void {
-    this._notificationsPinned.push(notification);
+  pinNotification(notification: Notification): void {
+    if (notification) {
+      notification.pinned = true;
+    }
+     this._notificationPinned = this._notificationsList.filter((a)=>a.pinned === true)
   }
+
   deleteAllNotifications(): void {
     this._notificationsList = this._notificationsList.filter(
       (a) => a.Permanent !== false
@@ -52,6 +60,9 @@ export class NotificationManager implements INotificationManager {
     return this._notificationsList;
   }
 
+  getNotificationsPinned(): Notification[]{
+    return this._notificationPinned;
+  }
   sortNotifications(): void {
     this._notificationsList.sort((a, b) => {
       if (a.Permanent && !b.Permanent) {
