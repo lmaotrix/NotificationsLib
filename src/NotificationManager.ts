@@ -42,12 +42,17 @@ export class NotificationManager implements INotificationManager {
     if (notification) {
       notification.pinned = true;
     }
-     this._notificationPinned = this._notificationsList.filter((a)=>a.pinned === true)
+    this._notificationPinned = this._notificationsList.filter(
+      (a) => a.pinned === true
+    );
   }
 
   deleteAllNotifications(): void {
     this._notificationsList = this._notificationsList.filter(
       (a) => a.Permanent !== false
+    );
+    this._notificationPinned = this._notificationPinned.filter(
+      (a) => a.pinned !== false
     );
   }
   deleteNotification(notification: Notification): void {
@@ -60,7 +65,7 @@ export class NotificationManager implements INotificationManager {
     return this._notificationsList;
   }
 
-  getNotificationsPinned(): Notification[]{
+  getNotificationsPinned(): Notification[] {
     return this._notificationPinned;
   }
   sortNotifications(): void {

@@ -12,30 +12,30 @@ import { Notification, NotificationManager } from "../src/NotificationManager";
 describe("Class NotificationManager", () => {
   const notification1: Notification = {
     title: "notifica1",
-    description: "Sono una vecchia notifica",
+    description: "sono una notifica del 01/05/2023",
     timestamp: new Date("2023-05-01"),
     Permanent: false,
     type: "",
     pinned: false,
   };
   const notification2: Notification = {
-    title: "sono una notifica pinned",
-    description: "Sono una nuova notifica ",
+    title: "notifica2 permanente",
+    description: "Sono una notifica del 15/04/2023 ",
     timestamp: new Date("2023-04-15"),
     Permanent: true,
     type: "",
     pinned: false,
   };
   const notification3: Notification = {
-    title: "sono una nuova notifica",
-    description: "Sono una nuova notifica ",
+    title: "notifica3",
+    description: "Sono una notifica del 12/08/2023",
     timestamp: new Date("2023-08-12"),
     Permanent: false,
     type: "",
     pinned: false,
   };
   let notificationManager: NotificationManager;
-  // beforeAll(() => {});
+
   beforeEach(() => {
     notificationManager = new NotificationManager(2000);
     notificationManager.addNotification(notification1);
@@ -44,7 +44,7 @@ describe("Class NotificationManager", () => {
   });
   //1)test get notification (deve restituire la liata di notifiche)
   describe("Metodo getNotifications", () => {
-    test("il metodo restituisce la lista delle notifiche", () => {
+    test("restituisce la lista delle notifiche, senza distinzione di ordinamento", () => {
       const notifications = notificationManager.getNotifications();
       expect(notifications.includes(notification2)).toBeTruthy();
       expect(notifications.includes(notification1)).toBeTruthy();
@@ -53,7 +53,7 @@ describe("Class NotificationManager", () => {
   });
   //2)test deleteNotification
   describe("Metodo deleteNotification", () => {
-    test("il metodo deve eliminare una notifica dalla lista", () => {
+    test("deve eliminare una notifica dalla lista", () => {
       notificationManager.deleteNotification(notification1);
       const notifications = notificationManager.getNotifications();
       expect(notifications).toEqual([notification2, notification3]);
@@ -62,16 +62,19 @@ describe("Class NotificationManager", () => {
 
   //3)test deleteAllNotification
   describe("Metodo deleteAllNotification", () => {
-    test("il metodo deve eliminare tutte le notifiche senza il pin dalla lista", () => {
+    test("il metodo deve eliminare tutte le notifiche tranne quelle permanenti e pinned", () => {
       notificationManager.deleteAllNotifications();
       const notifications = notificationManager.getNotifications();
       expect(notifications).toEqual([notification2]);
+      const notitificationsPinned =
+        notificationManager.getNotificationsPinned();
+      expect(notitificationsPinned).toEqual([]);
     });
   });
   jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
   // 4)test deleteNotificationOntimeout
-  describe("Notifica rimossa dopo il dalay", () => {
-    test("Mi aspetto che l'array abbia solo le notifiche pinned dopo il timeout", () => {
+  describe("Notifica rimossa dopo il timeOut", () => {
+    test("Mi aspetto che l'array abbia solo le notifiche permanent dopo il timeout", () => {
       jest.runAllTimers();
       const notifications = notificationManager.getNotifications();
       expect(notifications).toHaveLength(1);
@@ -79,7 +82,7 @@ describe("Class NotificationManager", () => {
   });
   //5)test le notifiche pinned sono  in alto e sucessivamente in ordine cronologico
   describe("Metodo AddNotification", () => {
-    test("Il metodo add aggiunge le notifiche nella lista in ordine cronologico dalla più recente alla più vecchia", () => {
+    test("Aggiunge le notifiche nella lista in ordine cronologico dalla più recente alla più vecchia", () => {
       const notifications = notificationManager.getNotifications();
       expect(notifications).toEqual([
         notification2,
@@ -91,7 +94,7 @@ describe("Class NotificationManager", () => {
 
   //6)Test addPin
   describe("Metodo addPin", () => {
-    test("Il metodo deve testare se i pin sono stati aggiunti correttamente nella lista", () => {
+    test("Se gli oggetti pinned sono stati aggiunti correttamente nella lista", () => {
       notificationManager.pinNotification(notification1);
       expect(notification1.pinned).toEqual(true);
       const notificationsPinned = notificationManager.getNotificationsPinned();
@@ -99,4 +102,3 @@ describe("Class NotificationManager", () => {
     });
   });
 });
-
