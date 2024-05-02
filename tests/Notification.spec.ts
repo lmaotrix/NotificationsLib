@@ -36,13 +36,51 @@ function getNotificationManager(): NotificationManager {
 }
 
 describe("Class NotificationManager", () => {
-  // // 1) test add di una notifica
-  // describe("Metodo AddNotification", () => {
-  //   test("Aggiunge una notifica", ()=>{
-
-  //   })
-
-  // });
+  // 1) test add di una notifica
+  describe("Metodo AddNotification", () => {
+    test("Aggiunge o più notifiche in ordine cronologico", () => {
+      const notificationManager = new NotificationManager(2000);
+      let notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([]);
+      notificationManager.addNotification(notification1);
+      notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([notification1]);
+      notificationManager.addNotification(notification2);
+      notificationManager.addNotification(notification3);
+      notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([
+        notification1,
+        notification3,
+        notification2,
+      ]);
+    });
+    test("La notifica deve essere rimossa dopo un tempo prestabilito, poiche' non fornito", () => {
+      jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
+      jest.spyOn(global, "setTimeout");
+      const notificationManager = new NotificationManager(2000);
+      notificationManager.addNotification(notification1, true);
+      let notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([notification1]);
+      jest.runAllTimers();
+      expect(setTimeout).toBeCalledWith(expect.any(Function), 2000);
+      notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([]);
+      jest.useRealTimers();
+    });
+    test("La notifica deve essere rimossa dopo un tempo fornito", () => {
+      jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
+      jest.spyOn(global, "setTimeout");
+      const notificationManager = new NotificationManager(2000);
+      notificationManager.addNotification(notification1, { delay: 10000 });
+      let notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([notification1]);
+      jest.runAllTimers();
+      expect(setTimeout).toBeCalledWith(expect.any(Function), 10000);
+      notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([]);
+      jest.useRealTimers();
+    });
+  });
 
   //2)test get notification (deve restituire la liata di notifiche)
   describe("Metodo getNotifications", () => {
@@ -90,18 +128,22 @@ describe("Class NotificationManager", () => {
   });
 
   //5) pinNotification
+  describe("Metodo pinNotification", () => {
+    test("il metodo deve aggiungere il pin in una notifica", () => {
+      const notificationManager = getNotificationManager();
+      expect(notification3.pinned).toBe(false);
+      notificationManager.pinNotification(notification3);
+      expect(notification3.pinned).toBe(true);
+    });
+  });
 
   //6) unpinNotification
-
-  // 5)test deleteNotificationOntimeout
-  // describe("Notifiche rimosse dopo il timeOut", () => {
-  //   test("Dopo il timeot tutte le notifiche unpinned vengono eliminate", () => {
-  //     jest.useFakeTimers(); // usa dei timmer finti per non dover aspettare ad eseguire il test
-  //     const notificationManager = getNotificationManager();
-  //     jest.runAllTimers();
-  //     const notifications = notificationManager.getNotifications();
-  //     expect(notifications).toHaveLength(0);
-  //     jest.useRealTimers();
-  //   });
-  // });
+  describe("metodo unpinNotification", () => {
+    test("il metodo deve togliere il pin alla notifica", () => {
+      const notificationManager = getNotificationManager();
+      expect(notification3.pinned).toBe(true);
+      notificationManager.unpinNotification(notification3);
+      expect(notification3.pinned).toBe(false);
+    });
+  });
 });

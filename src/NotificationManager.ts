@@ -1,10 +1,17 @@
+export type AutoRemoveOptions = {
+  delay?: number;
+};
+
 interface INotificationManager {
-  addNotification(notification: Notification): void;
+  addNotification(
+    notification: Notification,
+    autoRemove?: boolean | AutoRemoveOptions
+  ): void;
   deleteNotification(notification: Notification): void;
   deleteAllNotifications(): void;
   getNotifications(): Notification[];
   pinNotification(notification: Notification): void;
-  unPinNotification(notification: Notification): void;
+  unpinNotification(notification: Notification): void;
 }
 
 export type Notification = {
@@ -14,21 +21,43 @@ export type Notification = {
   pinned: boolean;
 };
 
+// function x(
+//   autoRemove?: boolean,
+//   autoRemoveAfter?: number,
+//   autoRemoveSuspendable?: boolean
+// ): void {}
+// x(true, undefined, true);
+
+// function y(
+//   autoRemove?:
+//     | boolean
+//     | { autoRemoveAfter?: number; autoRemoveSuspendable?: boolean }
+// ): void {}
+// y({ autoRemoveSuspendable: true });
+// y();
+// y(true);
+
 export class NotificationManager implements INotificationManager {
-  private _defaultNotificationDuration: number;
+  private _defaultAutoRemoveDelay: number;
   private _notificationsList: Notification[];
-  public constructor(defaulNotificationDuration: number) {
-    this._defaultNotificationDuration = defaulNotificationDuration;
+  public constructor(defaultAutoRemoveDelay: number) {
+    this._defaultAutoRemoveDelay = defaultAutoRemoveDelay;
     this._notificationsList = [];
   }
 
-  public addNotification(notification: Notification): void {
+  public addNotification(
+    notification: Notification,
+    autoRemove?: boolean | AutoRemoveOptions
+  ): void {
     this._notificationsList.push(notification);
     this._sortNotifications();
-    if (!notification.pinned) {
+
+    if (autoRemove) {
+      const delay =
+        (autoRemove as AutoRemoveOptions).delay || this._defaultAutoRemoveDelay;
       setTimeout(() => {
         this.deleteNotification(notification);
-      }, this._defaultNotificationDuration);
+      }, delay);
     }
   }
 
@@ -42,7 +71,7 @@ export class NotificationManager implements INotificationManager {
   }
 
   public getNotifications(): Notification[] {
-    return this._notificationsList;
+    return [...this._notificationsList];
   }
 
   private _sortNotifications(): void {
@@ -59,7 +88,7 @@ export class NotificationManager implements INotificationManager {
   public pinNotification(notification: Notification): void {
     notification.pinned = true;
   }
-  unPinNotification(notification: Notification): void {
+  unpinNotification(notification: Notification): void {
     notification.pinned = false;
   }
 }
