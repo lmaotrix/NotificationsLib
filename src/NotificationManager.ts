@@ -2,80 +2,64 @@ interface INotificationManager {
   addNotification(notification: Notification): void;
   deleteNotification(notification: Notification): void;
   deleteAllNotifications(): void;
-
   getNotifications(): Notification[];
-  sortNotifications(): void;
+  pinNotification(notification: Notification): void;
+  unPinNotification(notification: Notification): void;
 }
 
 export type Notification = {
   title: string;
   description: string;
   timestamp: Date;
-  Permanent: boolean;
-  type: string;
   pinned: boolean;
 };
-//  export type NotificationPinned = {
-//    notification : Notification;
-//    pinned: boolean;
-//  }
 
 export class NotificationManager implements INotificationManager {
+  private _defaultNotificationDuration: number;
   private _notificationsList: Notification[];
-  private _notificationPinned: Notification[];
-  public constructor(public timeOut: number) {
+  public constructor(defaulNotificationDuration: number) {
+    this._defaultNotificationDuration = defaulNotificationDuration;
     this._notificationsList = [];
-    this.timeOut = timeOut;
-    this._notificationPinned = [];
   }
 
-  addNotification(notification: Notification): void {
+  public addNotification(notification: Notification): void {
     this._notificationsList.push(notification);
-    this.sortNotifications();
-    if (!notification.Permanent) {
+    this._sortNotifications();
+    if (!notification.pinned) {
       setTimeout(() => {
         this.deleteNotification(notification);
-      }, this.timeOut);
+      }, this._defaultNotificationDuration);
     }
-  }
-  pinNotification(notification: Notification): void {
-    if (notification) {
-      notification.pinned = true;
-    }
-    this._notificationPinned = this._notificationsList.filter(
-      (a) => a.pinned === true
-    );
   }
 
-  deleteAllNotifications(): void {
-    this._notificationsList = this._notificationsList.filter(
-      (a) => a.Permanent !== false
-    );
-    this._notificationPinned = this._notificationPinned.filter(
-      (a) => a.pinned !== false
-    );
+  public deleteAllNotifications(): void {
+    this._notificationsList = this._notificationsList.filter((a) => a.pinned);
   }
-  deleteNotification(notification: Notification): void {
+  public deleteNotification(notification: Notification): void {
     this._notificationsList = this._notificationsList.filter(
       (a) => a !== notification
     );
   }
 
-  getNotifications(): Notification[] {
+  public getNotifications(): Notification[] {
     return this._notificationsList;
   }
 
-  getNotificationsPinned(): Notification[] {
-    return this._notificationPinned;
-  }
-  sortNotifications(): void {
+  private _sortNotifications(): void {
     this._notificationsList.sort((a, b) => {
-      if (a.Permanent && !b.Permanent) {
+      if (a.pinned && !b.pinned) {
         return -1;
-      } else if (!a.Permanent && b.Permanent) {
+      } else if (!a.pinned && b.pinned) {
         return 1;
       }
       return b.timestamp.getTime() - a.timestamp.getTime();
     });
+  }
+  //Pin alla notifica
+  public pinNotification(notification: Notification): void {
+    notification.pinned = true;
+  }
+  unPinNotification(notification: Notification): void {
+    notification.pinned = false;
   }
 }
