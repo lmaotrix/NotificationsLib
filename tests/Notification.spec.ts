@@ -7,7 +7,8 @@ import {
   jest,
   test,
 } from "@jest/globals";
-import { Notification, NotificationManager } from "../src/NotificationManager";
+import { NotificationManager } from "../src/Models/NotificationManager";
+import { Notification } from "../src/Types";
 
 const notification1: Notification = {
   title: "notifica1",

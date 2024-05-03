@@ -1,26 +1,5 @@
-//La creazione di questo type rende piu legibile il codice
-export type AutoRemoveOptions = {
-  delay?: number;
-};
-
-interface INotificationManager {
-  addNotification(
-    notification: Notification,
-    autoRemove?: boolean | AutoRemoveOptions
-  ): void;
-  deleteNotification(notification: Notification): void;
-  deleteAllNotifications(): void;
-  getNotifications(): Notification[];
-  pinNotification(notification: Notification): void;
-  unpinNotification(notification: Notification): void;
-}
-
-export type Notification = {
-  title: string;
-  description: string;
-  timestamp: Date;
-  pinned: boolean;
-};
+import { INotificationManager } from "../Interfaces";
+import { Notification, AutoRemoveOptions } from "../Types";
 
 export class NotificationManager implements INotificationManager {
   private _defaultAutoRemoveDelay: number; //Durata del autoRemove di defout
