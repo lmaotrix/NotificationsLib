@@ -27,7 +27,7 @@ const notification3: Notification = {
   timestamp: new Date("2023-08-12"),
   pinned: false,
 };
-//restituisce una istanza del notification manager e fa le add delle notifiche 
+//restituisce una istanza del notification manager e fa le add delle notifiche
 function getNotificationManager(): NotificationManager {
   const notificationManager = new NotificationManager(2000);
   notificationManager.addNotification(notification1);
@@ -37,7 +37,7 @@ function getNotificationManager(): NotificationManager {
 }
 
 describe("Class NotificationManager", () => {
-  // 1) test add di una notifica
+  // test add di una notifica
   describe("Metodo AddNotification", () => {
     test("Aggiunge o più notifiche in ordine cronologico", () => {
       const notificationManager = new NotificationManager(2000);
@@ -49,7 +49,8 @@ describe("Class NotificationManager", () => {
       notificationManager.addNotification(notification2);
       notificationManager.addNotification(notification3);
       notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([ // 3° asserzione = mi aspetto di trovare le tre notifiche in ordine 
+      expect(notifications).toEqual([
+        // 3° asserzione = mi aspetto di trovare le tre notifiche in ordine
         notification1,
         notification3,
         notification2,
@@ -74,34 +75,21 @@ describe("Class NotificationManager", () => {
       const notificationManager = new NotificationManager(2000);
       notificationManager.addNotification(notification1, { delay: 10000 }); // add notifica con un timeout diversa dal default
       let notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([notification1]); // mi aspetto che la notifica1 sia aggiunta nella lista 
+      expect(notifications).toEqual([notification1]); // mi aspetto che la notifica1 sia aggiunta nella lista
       jest.runAllTimers();
       expect(setTimeout).toBeCalledWith(expect.any(Function), 10000); // verifica che la durata del timeout sia pari a 10000 quello di default
       notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([]); // mi aspetto che dopo il timeout la lista sia vuota 
+      expect(notifications).toEqual([]); // mi aspetto che dopo il timeout la lista sia vuota
       jest.useRealTimers();
     });
   });
-
-  //2)test get notification (deve restituire la liata di notifiche)
-  describe("Metodo getNotifications", () => {
-    test("restituisce la lista delle notifiche ordinata", () => {
-      const notificationManager = getNotificationManager();
-      const notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([ // Mi aspetto che la lista delle notifiche sia ordinata
-        notification1,
-        notification3,
-        notification2,
-      ]);
-    });
-  });
-
-  //3)test deleteNotification
+  //test deleteNotification
   describe("Metodo deleteNotification", () => {
     test("deve eliminare una notifica dalla lista", () => {
       const notificationManager = getNotificationManager();
       let notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([ // controllo se la lista contiene tutte le notifiche ordinate 
+      expect(notifications).toEqual([
+        // controllo se la lista contiene tutte le notifiche ordinate
         notification1,
         notification3,
         notification2,
@@ -112,12 +100,13 @@ describe("Class NotificationManager", () => {
     });
   });
 
-  //4)test deleteAllNotification
+  //test deleteAllNotification
   describe("Metodo deleteAllNotification", () => {
     test("il metodo deve eliminare tutte le notifiche, tranne quelle pinnate", () => {
       const notificationManager = getNotificationManager();
       let notifications = notificationManager.getNotifications();
-      expect(notifications).toEqual([ // prima verifico che ci siano le notifiche nella lista
+      expect(notifications).toEqual([
+        // prima verifico che ci siano le notifiche nella lista
         notification1,
         notification3,
         notification2,
@@ -128,7 +117,21 @@ describe("Class NotificationManager", () => {
     });
   });
 
-  //5) pinNotification
+  //test get notification (deve restituire la liata di notifiche)
+  describe("Metodo getNotifications", () => {
+    test("restituisce la lista delle notifiche ordinata", () => {
+      const notificationManager = getNotificationManager();
+      const notifications = notificationManager.getNotifications();
+      expect(notifications).toEqual([
+        // Mi aspetto che la lista delle notifiche sia ordinata
+        notification1,
+        notification3,
+        notification2,
+      ]);
+    });
+  });
+
+  // pinNotification
   describe("Metodo pinNotification", () => {
     test("il metodo deve aggiungere il pin in una notifica", () => {
       const notificationManager = getNotificationManager();
